@@ -10,7 +10,11 @@ points <- tibble(
   b = a * 2 / 5 + rnorm(nsim, 1, 1)
 )
 
-
+pca_res <- points %>% 
+  recipe(~a + b) %>% 
+  step_pca(all_numeric(), 
+           options = list(center = TRUE, scale. = TRUE)) %>% 
+  prep()
 
 points <- bind_cols(
   points, 
@@ -32,13 +36,11 @@ points <- bind_cols(
       a_scaled = a,
       b_scaled = b
     ),
-  points %>% 
-    recipe(~a + b) %>% 
-    step_normalize(all_numeric()) %>% 
-    step_pca(all_numeric()) %>% 
-    prep() %>% 
+  pca_res %>% 
     bake(new_data = NULL)
 )
+
+
 
 
 write_csv(points, "./data/pca_example.csv")
@@ -46,3 +48,7 @@ write_csv(points, "./data/pca_example.csv")
 points %>% 
   ggplot(aes(x = a, y = b)) +
   geom_point()
+
+pca_res$steps[[1]]$res
+
+prcomp(points %>% select(a, b), center = T, scale. = T)

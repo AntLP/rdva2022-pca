@@ -6,7 +6,7 @@ import pandas as pd
 import random
 
 PROMUTUEL_YELLOW = "#FFC300"
-PROMUTUEL_GREY = "#7F7F7F"
+PROMUTUEL_GREY = "#adafb2"
 
 
 class PCA(Scene):
@@ -79,6 +79,8 @@ class center_points(PCA):
         points_centered = VGroup(*[Dot([row["a_centered"], row["b_centered"], 0], color = PROMUTUEL_YELLOW) for _, row in data.iterrows()])
         self.add(self.plane, points_init)
         self.play(Transform(points_init, points_centered, run_time = 2))
+        self.wait(15)
+
 
 class scale_points(PCA):
     def construct(self):
@@ -90,6 +92,42 @@ class scale_points(PCA):
 
         self.add(self.plane, points_centered)
         self.play(Transform(points_centered, points_scaled, run_time = 2))
+        self.wait(15)
+
+
+class distance_vis(PCA):
+    def construct(self):
+        data = self.import_points()
+        points_scaled = VGroup(*[Dot([row["a_scaled"], row["b_scaled"], 0], color = PROMUTUEL_YELLOW) for _, row in data.iterrows()])
+        PC1 = Line([-10, -0, 0], [10, 0, 0])
+
+        projections = self.create_projections(points_scaled, PC1)
+        
+        dist_brace = Brace(Line([0, 0, 0], projections["points"][2].get_center(), color = RED), direction=DOWN)
+        dist_formula = MathTex("d = {:.2f}".format(self.calc_square_dist(projections["points"][2])**0.5)).next_to(dist_brace, DOWN, buff=0)
+
+
+        self.initial_setup()       
+        self.add(self.plane, points_scaled, PC1, projections, dist_brace, dist_formula)
+
+class distance_vis2(PCA):
+    def construct(self):
+        data = self.import_points()
+        points_scaled = VGroup(*[Dot([row["a_scaled"], row["b_scaled"], 0], color = PROMUTUEL_YELLOW) for _, row in data.iterrows()])
+        PC1 = Line([-10, -0, 0], [10, 0, 0])
+
+        projections = self.create_projections(points_scaled, PC1)
+        
+        dist_brace = BraceBetweenPoints([0, 0, 0], projections["points"][2].get_center())
+        dist_brace.add_updater(lambda d: d.become(BraceBetweenPoints([0, 0, 0], projections["points"][2].get_center())))
+        dist_formula = MathTex("d = {:.2f}".format(self.calc_square_dist(projections["points"][2])**(0.5))).next_to(dist_brace, DOWN, buff=0)
+        dist_formula.add_updater(lambda d: d.become(MathTex("d = {:.2f}".format(self.calc_square_dist(projections["points"][2])**(0.5)))).next_to(dist_brace, DOWN, buff=0))
+
+
+        self.initial_setup()       
+        self.add(self.plane, points_scaled, PC1, projections, dist_brace, dist_formula)
+        self.play(Rotate(PC1, angle = TAU/20, about_point = ORIGIN, run_time = 0.5))
+        self.wait(60)
 
 
 class pc1_find(PCA):

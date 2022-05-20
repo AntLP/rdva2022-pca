@@ -1,0 +1,33 @@
+---
+title: "PCA"
+subtitle: "Rendez-vous analytique 2022"
+author: "Antoine Lachance-Perreault"
+date: "2022-05-10 (updated: `r Sys.Date()`)"
+format:
+  revealjs: 
+    slide-number: true
+    chalkboard: 
+      buttons: false
+    preview-links: auto
+    logo: media/images/Promutuel.svg
+    css: presentation/styles.css
+    #footer: ../media/images/Promutuel.svg
+#resources:
+  #- demo.pdf
+---
+
+# Fonctionnement de la méthode
+
+# 1. Centrer et réduire
+
+##  {background-video="media/videos/pca_viz/1080p60/center_points.mp4" background-video-loop="false" background-video-muted="true"}
+
+##  {background-video="media/videos/pca_viz/1080p60/scale_points.mp4" background-video-loop="false" background-video-muted="true"}
+
+
+##  {background-image="media/images/pca_viz/distance_vis_ManimCE_v0.15.1.png"}
+
+##  {background-video="media/videos/pca_viz/1080p60/distance_vis2.mp4" background-video-loop="false" background-video-muted="true"}
+
+
+# test

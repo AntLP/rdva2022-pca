@@ -1,5 +1,6 @@
 media/
-
+PCA_Presentation_files/
+*.html
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
