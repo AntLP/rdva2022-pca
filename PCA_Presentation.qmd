@@ -16,18 +16,100 @@ format:
   #- demo.pdf
 ---
 
+<!-- Commençons par un petit peu de terminologie... -->
+
+## Principal component analysis (PCA) {auto-animate="true"}
+
+- Non supervisé
+ 
+ 
+## Principal component analysis (PCA) {auto-animate="true"}
+
+- Non supervisé 
+
+
+  - GLM: $y = x_1 + x_2$
+  - PCA: ` ~ x1 + x2`
+  
+. . .
+  
+- Réduction de la dimensionnalité
+
+
+::: {.notes}
+Prendre des données avec un haut niveau de dimensions, et les remplacer par quelques dimensions significatives
+:::
+
+
 # Fonctionnement de la méthode
+
+
 
 # 1. Centrer et réduire
 
-##  {background-video="media/videos/pca_viz/1080p60/center_points.mp4" background-video-loop="false" background-video-muted="true"}
+##  {background-video="media/videos/pca_viz/1080p60/center_points.mp4" 
+    background-video-loop="false" 
+    ackground-video-muted="true"
+    autoslide=2000}
+##  {background-image="media/images/pca_viz/center_points_final_position_ManimCE_v0.15.1.png"}
 
-##  {background-video="media/videos/pca_viz/1080p60/scale_points.mp4" background-video-loop="false" background-video-muted="true"}
 
+##  {background-video="media/videos/pca_viz/1080p60/scale_points.mp4" 
+    background-video-loop="false" 
+    background-video-muted="true"
+    autoslide=2000}
+##  {background-image="media/images/pca_viz/scale_points_final_position_ManimCE_v0.15.1.png"}
+
+# 2. Appliquer la méthode
+
+<!-- 
+  Le but de la méthode est de trouver de meilleurs axes.
+  Comment mesurer si un axe est meilleur?
+    Comme mentionné précédemment, la PCA fait partie de la famille de techniques de réductions de la dimentionnalité
+    
+  C'est relativement abstrait, donc il faudra définir qu'est qu'on veut dire par meilleur
+-->
 
 ##  {background-image="media/images/pca_viz/distance_vis_ManimCE_v0.15.1.png"}
 
-##  {background-video="media/videos/pca_viz/1080p60/distance_vis2.mp4" background-video-loop="false" background-video-muted="true"}
+<!-- 
+  Ce qu'on va faire est mesurer la distance de la projection de chaque point sur notre nouveau principal component.
+  On va prendre la distance au carré pour ne pas que des distances positives et négaitves s'annulent
+  Pour chaque principal component, notre but sera de maximiser cette distance
+  
+  C'est pour ça qu'il est très important de centrer et réduire les variables...
+    Si on a une variable qui est de 0 à 1 et une autre de 0 à 10000, le fait de prendre la distance au carré sans 
+    centrer et réduire ferait que la plus grosse variable aurait une beaucoup trop grosse influence sur le principal component
+-->
+
+##  {background-video="media/videos/pca_viz/1080p60/distance_vis2.mp4" 
+    background-video-loop="false" 
+    background-video-muted="true"
+    autoslide=2000}
+##  {background-image="media/images/pca_viz/distance_vis2_final_position_ManimCE_v0.15.1.png"}
 
 
-# test
+##  {background-video="media/videos/pca_viz/1080p60/tot_distance_calc.mp4" 
+    background-video-loop="false" 
+    background-video-muted="true"
+    autoslide=6500}
+##  {background-image="media/images/pca_viz/tot_distance_calc_ManimCE_v0.15.1.png"}
+
+##  {background-video="media/videos/pca_viz/1080p60/pc1_find.mp4" 
+    background-video-loop="false" 
+    background-video-muted="true"
+    autoslide=10000}
+##  {background-image="media/images/pca_viz/pc1_find_v0.15.1.png"}
+
+
+##  {background-video="media/videos/pca_viz/1080p60/pc1_set.mp4" 
+    background-video-loop="false" 
+    background-video-muted="true"
+    autoslide=3000}
+##  {background-image="media/images/pca_viz/pc1_find_v0.15.1.png"}
+
+# notes
+
+github du template https://github.com/quarto-dev/quarto-web/blob/main/docs/presentations/revealjs/demo/index.qmd
+
+map interactive comme dans: https://quarto.org/docs/presentations/revealjs/demo/#/interactive-slides
