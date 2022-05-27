@@ -1,5 +1,10 @@
 media/
 PCA_Presentation_files/
+bkup/
+img/
+libs/
+data/
+xaringan-themer.css
 *.html
 
 # Byte-compiled / optimized / DLL files

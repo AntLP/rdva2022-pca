@@ -6,9 +6,9 @@ import pandas as pd
 import random
 from operator import itemgetter
 
-PROMUTUEL_YELLOW = "#FFC300"
-PROMUTUEL_GREY = "#adafb2"
-
+PROMUTUEL_YELLOW = "#FDDB00"
+#PROMUTUEL_GREY = "#adafb2"
+PROMUTUEL_GREY = "#53565A"
 
 class PCA(Scene):
     def initial_setup(self):
@@ -24,8 +24,8 @@ class PCA(Scene):
             }
         )
         
-    def construct(self):
-        pass 
+    # def construct(self):
+    #     pass 
 
     def import_points(self):
         return pd.read_csv("./data/pca_example.csv") 
@@ -95,7 +95,42 @@ class scale_points(PCA):
         self.play(Transform(points_centered, points_scaled, run_time = 2))
         self.wait(3)
 
-class distance_vis(PCA):
+
+class pca_init(PCA):
+    def construct(self):
+        data = self.import_points()
+        points_scaled = VGroup(*[Dot([row["a_scaled"], row["b_scaled"], 0], color = PROMUTUEL_YELLOW) for _, row in data.iterrows()])
+        PC1 = Line([-10, -0, 0], [10, 0, 0], color = BLUE)
+
+
+        self.initial_setup()       
+        self.add(self.plane, points_scaled, PC1)
+        self.play(Rotate(PC1, np.pi, about_point = [0, 0, 0], run_time = 2))
+        self.wait(1)
+
+class project_points(PCA):
+    def construct(self):
+        data = self.import_points()
+        points_scaled = VGroup(*[Dot([row["a_scaled"], row["b_scaled"], 0], color = PROMUTUEL_YELLOW) for _, row in data.iterrows()])
+        PC1 = Line([-10, -0, 0], [10, 0, 0], color = BLUE)
+
+        projections = self.create_projections(points_scaled, PC1)
+
+        self.initial_setup()       
+        self.add(self.plane, points_scaled, PC1)
+        self.play(Create(projections))
+        self.wait(1)
+
+class distance_vis0(PCA):
+    def construct(self):
+        data = self.import_points()
+        points_scaled = VGroup(*[Dot([row["a_scaled"], row["b_scaled"], 0], color = PROMUTUEL_YELLOW) for _, row in data.iterrows()])
+        PC1 = Line([-10, -0, 0], [10, 0, 0], color = BLUE)
+
+        self.initial_setup()       
+        self.add(self.plane, points_scaled, PC1)
+
+class distance_vis1(PCA):
     def construct(self):
         data = self.import_points()
         points_scaled = VGroup(*[Dot([row["a_scaled"], row["b_scaled"], 0], color = PROMUTUEL_YELLOW) for _, row in data.iterrows()])
@@ -108,7 +143,9 @@ class distance_vis(PCA):
 
 
         self.initial_setup()       
-        self.add(self.plane, points_scaled, PC1, projections, dist_brace, dist_formula)
+        self.add(self.plane, points_scaled, PC1, projections)
+        self.play(Create(VGroup(dist_brace, dist_formula), run_time = 0.25))
+        self.wait(2)
 
 class distance_vis2(PCA):
     def construct(self):
@@ -127,7 +164,7 @@ class distance_vis2(PCA):
         self.initial_setup()       
         self.add(self.plane, points_scaled, PC1, projections, dist_brace, dist_formula)
         self.play(Rotate(PC1, angle = TAU/20, about_point = ORIGIN, run_time = 0.5))
-        self.wait(15)
+        self.wait(4)
 
 
 class tot_distance_calc(PCA):
@@ -183,8 +220,8 @@ class tot_distance_calc(PCA):
             trans_brace = Transform(dist_brace, new_dist_brace, run_time = anim_run_time)
             trans_formula = Transform(dist_formula, new_dist_formula, run_time = anim_run_time)
             trans_value = Transform(dist_value, new_dist_value, run_time = anim_run_time)
-            create_formula = Create(new_dist_formula2, run_time = anim_run_time/100)
-            create_value = Create(new_dist_value2, run_time = anim_run_time/100)
+            create_formula = FadeIn(new_dist_formula2, run_time = anim_run_time)
+            create_value = FadeIn(new_dist_value2, run_time = anim_run_time)
             trans_cum_value = Transform(cum_value, new_cum_value, run_time = anim_run_time)
 
             self.play(trans_brace, trans_formula, trans_value, create_formula, create_value, trans_cum_value)
@@ -227,46 +264,137 @@ class pc1_set(PCA):
         self.add(self.plane, PC1, points_scaled, projections, formula, dist_indicator)
         self.play(Rotate(PC1, angle = TAU/8, about_point = ORIGIN, run_time = 2))
         self.wait(0.5)
-        self.play(Transform(PC1, Line([-10, 0, 0], [10, 0, 0], color = PROMUTUEL_YELLOW).rotate(angle = TAU/8, about_point = ORIGIN), run_time = 0.1))
+        self.play(
+            Transform(PC1, Line([-10, 0, 0], [10, 0, 0], color = GREEN_E).rotate(angle = TAU/8, about_point = ORIGIN), run_time = 0.25),
+            FadeOut(projections, run_time = 0.25)
+            )
         self.wait(4)
 
         
 class pc2_find(PCA):
     def construct(self):
-        pass
+        data = self.import_points()
+        points_scaled = VGroup(*[Dot([row["a_scaled"], row["b_scaled"], 0], color = PROMUTUEL_YELLOW) for _, row in data.iterrows()])
+
+        PC1 = Line([-10, -0, 0], [10, 0, 0], color = GREEN_E).rotate(TAU/8, about_point = ORIGIN)
+        PC2 = Line([-10, -0, 0], [10, 0, 0], color = GREEN_E).rotate(-TAU/8, about_point = ORIGIN)
+
+        self.initial_setup()
+        
+        self.add(self.plane, points_scaled, PC1)
+        self.play(Create(PC2))
+        self.wait(1)
 
 class rotate_axes(PCA):
     def construct(self):
         data = self.import_points()
         points_scaled = VGroup(*[Dot([row["a_scaled"], row["b_scaled"], 0], color = PROMUTUEL_YELLOW) for _, row in data.iterrows()])
 
-        PC1 = Line([-10, -0, 0], [10, 0, 0], color = BLUE).rotate(TAU/8, about_point = ORIGIN)
-        PC2 = Line([-10, -0, 0], [10, 0, 0]).rotate(-TAU/8, about_point = ORIGIN)
+        PC1 = Line([-10, -0, 0], [10, 0, 0], color = GREEN_E).rotate(TAU/8, about_point = ORIGIN)
+        PC2 = Line([-10, -0, 0], [10, 0, 0], color = GREEN_E).rotate(-TAU/8, about_point = ORIGIN)
 
         self.initial_setup()
         
         self.add(self.plane, points_scaled, PC1, PC2)
-        self.play(Uncreate(self.plane))
-        self.play(Create(self.plane))
+        self.play(FadeOut(self.plane, run_time = 0.25))
+        #self.play(Create(self.plane, run_time = 0.01))
 
         self.play(Rotate(VGroup(*[PC1, PC2, points_scaled]), angle = -TAU/8, about_point = ORIGIN, run_time = 2))
 
         self.initial_setup()
 
-        self.wait(1)
-        self.play(Create(self.plane))
+        self.wait(0.5)
+        self.play(FadeIn(self.plane, run_time = 0.25), FadeOut(VGroup(*[PC1, PC2]), run_time = 0.25))
+        self.wait(4)
+
+
+class calc_ssd_pc(PCA):
+    def construct(self):
+        data = self.import_points()
+        points_scaled = VGroup(*[Dot([row["a_scaled"], row["b_scaled"], 0], color = PROMUTUEL_YELLOW) for _, row in data.iterrows()])
+
+        PC1 = Line([-10, -0, 0], [10, 0, 0], color = GREEN_E).rotate(TAU/8, about_point = ORIGIN)
+        PC2 = Line([-10, -0, 0], [10, 0, 0], color = GREEN_E).rotate(-TAU/8, about_point = ORIGIN)
+
+        VGroup(*[PC1, PC2, points_scaled]).rotate(angle = -TAU/8, about_point = ORIGIN)
+
+        proj_1 = self.create_projections(points_scaled, PC1)
+        proj_2 = self.create_projections(points_scaled, PC2, point_color = "#47e0e6")
+
+        ssd_1 = self.calc_square_dist(proj_1["points"])
+        ssd_2 = self.calc_square_dist(proj_2["points"])
+
+        t0 = Table(
+            [[""],
+            [""]],
+            row_labels=[MathTex("PC_1"), MathTex("PC_2")],
+            col_labels=[MathTex(r"\sum d^2_i")],
+            include_outer_lines=True,
+            include_background_rectangle=True).scale(0.65).to_corner(UL)
+
+        t1 = Table(
+                    [[str(round(ssd_1, 2))],
+                    [""]],
+                    row_labels=[MathTex("PC_1"), MathTex("PC_2")],
+                    col_labels=[MathTex(r"\sum d^2_i")],
+                    include_outer_lines=True,
+                    include_background_rectangle=True).scale(0.65).to_corner(UL)
+        
+        t2 = Table(
+                    [[str(round(ssd_1, 2))],
+                    [str(round(ssd_2, 2))]],
+                    row_labels=[MathTex("PC_1"), MathTex("PC_2")],
+                    col_labels=[MathTex(r"\sum d^2_i")],
+                    include_outer_lines=True,
+                    include_background_rectangle=True).scale(0.65).to_corner(UL)
+
+        t3 = Table(
+                    [[str(round(ssd_1, 2)), "{:.2f}".format(ssd_1**0.5/(ssd_1**0.5 + ssd_2**0.5)*100)],
+                    [str(round(ssd_2, 2)), "{:.2f}".format(ssd_2**0.5/(ssd_1**0.5 + ssd_2**0.5)*100)]],
+                    row_labels=[MathTex("PC_1"), MathTex("PC_2")],
+                    col_labels=[MathTex(r"\sum d^2_i"), Text("%")],
+                    include_outer_lines=True,
+                    include_background_rectangle=True).scale(0.65).to_corner(UL)
+
+        self.initial_setup()
+        
+        self.add(self.plane, points_scaled)
+        self.play(
+            FadeIn(proj_1, run_time = 1),
+            Transform(t0, t1, run_time = 1))
         self.wait(1.5)
+        self.play(FadeOut(proj_1, run_time = 0.5))
+        self.play(
+            FadeIn(proj_2, run_time = 1),
+            Transform(t1, t2, run_time = 1))
+        self.wait(1.5)
+        self.play(FadeIn(t3, run_time = 1))
+        self.wait(4)
 
 
+class reduce_dim(PCA):
+    def construct(self):
+        data = self.import_points()
+        points_scaled = VGroup(*[Dot([row["a_scaled"], row["b_scaled"], 0], color = PROMUTUEL_YELLOW) for _, row in data.iterrows()])
+        points_scaled.rotate(-TAU/8, about_point = ORIGIN)
 
+        x_proj = VGroup(*[Dot(self.orthogonal_project_point_on_line(dot, Line([-10, 0, 0], [10, 0, 0])), color = PROMUTUEL_YELLOW) for dot in points_scaled])
+
+        self.initial_setup()
+        self.add(self.plane, points_scaled)
+        self.wait(0.5)
+        self.play(Transform(points_scaled, x_proj), FadeOut(self.plane), FadeIn(Line([-10, 0, 0], [10, 0, 0])), run_time = 2)
+        self.wait(4)
 
 
 class test(Scene):
     def construct(self):
-        line = Line([-10, -0, 0], [10, 0, 0])
-
-        line.rotate(TAU/8, about_point = ORIGIN)
-        self.play(Create(line))
-        self.play(Uncreate(line, remover=False))
-        # line = Line([-10, -0, 0], [10, 0, 0])
-        self.play(Create(line))
+        self.add(NumberPlane(
+            x_range=[-10, 10], 
+            y_range=[-10, 10], 
+            background_line_style={
+                "stroke_color": PROMUTUEL_YELLOW,
+                "stroke_width": 3,
+                "stroke_opacity": 0.2
+            }
+        ))

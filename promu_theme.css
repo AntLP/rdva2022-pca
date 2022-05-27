@@ -1,0 +1,82 @@
+#bg_vid {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%;
+    min-height: 100%;
+    width: 100%;
+  }
+
+  ul li { 
+    padding: 4px 0px; 
+}
+
+.red { 
+    color: #f54842; 
+}
+
+.blue { 
+    color: #427bf5; 
+}
+
+.green { 
+    color: #5bde64; 
+}
+
+/* Title slide */
+.title-slide {
+  text-align: left !important;
+  padding-left: 114px;
+}
+
+/* Title */
+.title-slide h1 {
+  color: var(--header-color);
+  font-size: 46px;
+  margin: 42px 0px 42px 0px
+}
+
+.title-slide h2 {
+  font-size: 36px;
+  margin: 18px 0px 18px 0px
+}
+
+.title-slide h3 {
+  font-size: 26px;
+  margin: 8px 0px 8px 0px
+}
+
+.title-slide h2,
+.title-slide h3 {
+  color: var(--text-color);
+}
+
+/* Tables */
+.remark-slide table {
+  margin: auto;
+  border: none;
+}
+th, td {
+  padding: 5px;
+  background: var(--background-color);
+  min-width: 50px;
+}
+.remark-slide thead, .remark-slide tfoot {
+  background: var(--background-color);
+  color: var(--header-color);
+}
+.remark-slide tr:nth-child(even) {
+  background: var(--background-color);
+}
+
+/* Thanks page */
+.thanks-page {
+  font-size: 36px;
+}
+
+.media-links {
+  font-size: 36px;
+  float: right;
+  vertical-align: middle;
+  border: 5px solid red;
+}
