@@ -108,6 +108,19 @@ class pca_init(PCA):
         self.play(Rotate(PC1, np.pi, about_point = [0, 0, 0], run_time = 2))
         self.wait(1)
 
+class pca_idee_gen(PCA):
+    def construct(self):
+        data = self.import_points()
+        points_scaled = VGroup(*[Dot([row["a_scaled"], row["b_scaled"], 0], color = PROMUTUEL_YELLOW) for _, row in data.iterrows()])
+        #PC1 = Line([-10, -0, 0], [10, 0, 0], color = BLUE)
+
+
+        self.initial_setup()       
+        self.add(self.plane, points_scaled)
+        self.play(Rotate(self.plane, 2*np.pi, about_point = [0, 0, 0], run_time = 10))
+        self.wait(1)
+
+
 class project_points(PCA):
     def construct(self):
         data = self.import_points()
