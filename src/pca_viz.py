@@ -71,6 +71,15 @@ class PCA(Scene):
         lines_projected[7].add_updater(lambda d: d.become(DashedLine(points[7].get_center(), points_projected[7].get_center())))
 
         return VDict([("points", VGroup(*points_projected)), ("lines", VGroup(*lines_projected))])
+
+class initial_data(PCA):
+    def construct(self):
+        self.initial_setup()
+
+        data = self.import_points()
+        points_init = VGroup(*[Dot([row["a"], row["b"], 0], color = PROMUTUEL_YELLOW) for _, row in data.iterrows()])
+        self.add(self.plane, points_init)
+        
 class center_points(PCA):
     def construct(self):
         self.initial_setup()
@@ -113,11 +122,32 @@ class pca_idee_gen(PCA):
         data = self.import_points()
         points_scaled = VGroup(*[Dot([row["a_scaled"], row["b_scaled"], 0], color = PROMUTUEL_YELLOW) for _, row in data.iterrows()])
         #PC1 = Line([-10, -0, 0], [10, 0, 0], color = BLUE)
+        initial_plane = NumberPlane(
+                    x_range=[-10, 10], 
+                    y_range=[-10, 10], 
+                    axis_config = {
+                        "stroke_opacity": 0
+                    },
+                    background_line_style={
+                        "stroke_color": PROMUTUEL_YELLOW,
+                        "stroke_width": 3,
+                        "stroke_opacity": 0.2
+                    }
+                )
 
+        pc_plane = NumberPlane(
+                    x_range=[-10, 10], 
+                    y_range=[-10, 10], 
+                    background_line_style={
+                        "stroke_color": PROMUTUEL_YELLOW,
+                        "stroke_width": 3,
+                        "stroke_opacity": 0
+                    }
+                )
 
         self.initial_setup()       
-        self.add(self.plane, points_scaled)
-        self.play(Rotate(self.plane, 2*np.pi, about_point = [0, 0, 0], run_time = 10))
+        self.add(initial_plane, points_scaled, pc_plane)
+        self.play(Rotate(pc_plane, np.pi/2, about_point = [0, 0, 0], run_time = 10))
         self.wait(1)
 
 
