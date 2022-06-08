@@ -1,8 +1,8 @@
 ---
 title: "PCA"
-subtitle: "Rendez-vous analytique 2022"
+subtitle: "Rendez-vous Analytique 2022"
 author: "Antoine Lachance-Perreault"
-date: "2022-05-10 (MAJ: `r Sys.Date()`)"
+date: "2022-06-03"
 output:
   xaringan::moon_reader:
     lib_dir: libs
@@ -14,6 +14,8 @@ output:
       countIncrementalSlides: false
     includes:
       after_body: "afterInit.html"
+    #self_contained: TRUE
+    #chakra: "./remark-latest.min.js"
 ---
 
 
@@ -41,7 +43,7 @@ PROMU_GREY = "#53565A"
 
 options(htmltools.dir.version = FALSE)
 opts_chunk$set(
-  fig.path = "img/",
+  fig.path = "media/",
   fig.width = 15,
   fig.height = 100/15,
   fig.retina = 3,
@@ -52,7 +54,8 @@ opts_chunk$set(
   warning = FALSE,
   fig.showtext = FALSE,
   fig.align = "center",
-  hiline = TRUE
+  hiline = TRUE,
+  dev.args = list(bg = "transparent")
 )
 style_duo(
   primary_color = PROMU_GREY,
@@ -64,11 +67,7 @@ style_duo(
   header_font_google = google_font("Roboto Condensed")
 )
 
-
-#ggthemr("flat dark", line_weight = 0.3)
-
 theme_set(
-#  ggthemr("flat dark", line_weight = 0.3, set_theme = F)$theme +
     theme(
       text = element_text(
         color = theme_xaringan_get_value("text_color")
@@ -94,7 +93,15 @@ theme_set(
         family = gsub("'", '', theme_xaringan_get_value("header_font_family")),
         color = theme_xaringan_get_value("header_color")
       ),
-      axis.text = NULL,
+      axis.text = element_text(
+        size = rel(1.5)
+      ),
+      axis.title = element_text(
+        size = rel(2)
+      ),
+      legend.text = element_text(
+        size = rel(1.5)
+      ),
       panel.grid = NULL,
       legend.position = "bottom",
       legend.key = element_rect(fill = PROMU_GREY, color = PROMU_GREY),
@@ -129,43 +136,35 @@ update_geom_defaults("line", list(
 ```{r load_data, include = F}
 dat_pca <- read.csv("./data/pca_example.csv") %>% 
   mutate(across(.fns = ~round(.x, 3)))
+
+source("./src/PCA_geo_assets.R")
 ```
 
 
-
-# À l'horaire
-
-1. Un petit peu de terminologie
-2. Fonctionnement de la méthode
-3. Exemple d'application
-
----
 
 # Classification de la méthode
 
 --
 
-* Non supervisé
+* Méthode non supervisée
 
---
-
-  * Modèle linéaire (supervisé): $y = x_1 + x_2+...+x_n$
-  * PCA (non supervisé): $\{x_1,x_2,...,x_n\}\rightarrow\{PC_1,PC_2,...,PC_n\}$
+  * Utilise la structure des données et non une variable réponse
+  * $\{x_1,x_2,...,x_n\}\rightarrow\{PC_1,PC_2,...,PC_n\}$
 
 --
 
 * Réduction de la dimensionnalité
 
---
-
   * $\{x_1,x_2,...,x_n\}\rightarrow\{PC_1,PC_2\}$
 
 --
 
-  * Pourquoi?
-    * Visualisation
-    * Modélisation
-    
+* Pourquoi?
+
+  * Visualisation
+  * Modélisation
+  * Comprendre les corrélations entre les données
+
 ???
 
 Visualisation: On ne peut pas faire un graphique à 10 variables, mais si on peut réduire nos 10 variables en 2 principal components qui résument leur effets, c'est plus gérable pour visualiser la donné
@@ -182,17 +181,16 @@ Le jeu de données:
 .left-column[
 ```{r}
 dat_pca %>% 
-  select(a, b) %>% 
-  kbl()
+  mutate(obs = 1:n()) %>% 
+  select(obs, a, b) %>% 
+  kbl(align=c("l", rep('c', 3)))
 ```
 ]
 
 .right-column[
-```{r}
-dat_pca %>% 
-  select(a, b) %>% 
-  ggplot(aes(x = a, y = b)) + 
-  geom_point() 
+
+```{r, out.width = "700px"}
+knitr::include_graphics("media/images/pca_viz/initial_data_ManimCE_v0.15.1.png")
 ```
 
 ]
@@ -264,16 +262,24 @@ bind_rows(
 ---
 
 class: center middle
-# 2. Trouver les principal component
+# 2. Trouver les « principal components »
 
 ---
 
-background-image: url("media/images/pca_viz/distance_vis0_ManimCE_v0.15.1.png")
-background-position: center
-background-size: contain
+# Idée générale
+
+<video width="100%" height="100%" id="bg_vid">
+    <source src="media/videos/pca_viz/2160p60/pca_idee_gen.mp4">
+</video>
+
+
 
 <!-- 
-  Comme j'ai mentionné précédemment, la PCA cherche à éliminer des variables pour en garder seulement quelques unes significative
+
+
+  Comme j'ai mentionné précédemment, la PCA est une méthode de réduction de la dimensionnalité, donc on cherche à éliminer des variables pour en garder seulement quelques unes significative, tout en gardant l'information importante des variables initialles.
+    
+    
     
   Pour arriver à cela, on va trouver un nouveau système d'axes où on va chercher à maximiser l'information contenu dans chaque axe
     De cette façon, les derniers axes auront moins d'information et pourront potentiellement être ignorés
@@ -292,9 +298,15 @@ background-size: contain
 
 ---
 
+background-image: url("media/images/pca_viz/distance_vis0_ManimCE_v0.15.1.png")
+background-position: center
+background-size: contain
+
+<!---
 <video width="100%" height="100%" id="bg_vid">
     <source src="media/videos/pca_viz/2160p60/pca_init.mp4">
 </video>
+--->
 
 ---
 
@@ -365,16 +377,72 @@ Dans ce cas à 2 dimensions, la solution est triviale parce que les principal co
 
 ---
 
+class: center middle
+# Un exemple pratique
+
+---
+
+# Le jeu de données
+
+```{r}
+plt_geodat_boxplot
+```
+
+---
+
+# Résultat de l'application
 
 
+```{r}
+plt_pct_var
+```
+
+---
+
+# Résultat de l'application
+
+```{r}
+plt_pc_scores
+```
+
+---
+
+# Visualisation des résultats
+```{r}
+pc_points
+```
+
+---
 
 
+# Visualisation des résultats
+
+```{r}
+dens_scores
+```
+
+---
 
 
+# Visualisation des résultats - Montréal
+
+```{r}
+mtl_scores
+```
 
 
+---
 
+# Visualisation des résultats - Québec
 
+```{r}
+qc_scores
+```
+
+---
+
+class: center middle
+# Questions?
 
 
 
