@@ -6,7 +6,7 @@ Présentation sur la principal component analysis produite dans le cadre du 4e R
 
 Couvre la méthode pour calculer les principal components et quelques exemples de visualisation sur des données du recensement 2016 de Statistique Canada.
 
-Une version publiée est disponible [ici](https://antlp.github.io/pca-rdva2022/)
+Une version publiée est disponible [ici](https://antlp.github.io/pca-rdva2022/).
 
 Les animations sont créées en python avec la library [manim](https://www.manim.community/).
 
