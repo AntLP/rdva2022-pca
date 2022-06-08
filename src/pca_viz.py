@@ -3,11 +3,8 @@
 from manim import *
 import numpy as np
 import pandas as pd
-import random
-from operator import itemgetter
 
 PROMUTUEL_YELLOW = "#FDDB00"
-#PROMUTUEL_GREY = "#adafb2"
 PROMUTUEL_GREY = "#53565A"
 
 class PCA(Scene):
@@ -23,9 +20,6 @@ class PCA(Scene):
                 "stroke_opacity": 0.2
             }
         )
-        
-    # def construct(self):
-    #     pass 
 
     def import_points(self):
         return pd.read_csv("./data/pca_example.csv") 
@@ -220,15 +214,9 @@ class tot_distance_calc(PCA):
         curr_point = projections["points"][7]
 
         dist_brace = BraceBetweenPoints([0, 0, 0], curr_point.get_center())
-        # dist_brace.add_updater(lambda d: d.become(BraceBetweenPoints([0, 0, 0], curr_point.get_center())))
         dist_formula = MathTex("d^2_8 = ").next_to(dist_brace, DOWN, buff=0).shift(0.20 * LEFT)
-        #dist_formula.add_updater(lambda d: d.become(MathTex("d^2 = ")).next_to(dist_brace, DOWN if dist_brace.get_center()[0] > 0 else UP, buff=0))
-
         
         dist_value = MathTex("{:.2f}".format(self.calc_square_dist(curr_point))).next_to(dist_formula, RIGHT, buff=0).shift(0.10 * RIGHT + 0.05 * DOWN)
-        #dist_value.add_updater(lambda d: d.become(MathTex("{:.2f}".format(self.calc_square_dist(curr_point)))).next_to(dist_formula, RIGHT, buff=0))
-
-
 
         x_val = [i.get_center()[0] for i in projections["points"]]
         projections["points"] = VGroup(*[projections["points"][i] for i in [x_val.index(i) for i in sorted(x_val)]])
@@ -270,7 +258,7 @@ class tot_distance_calc(PCA):
             self.play(trans_brace, trans_formula, trans_value, create_formula, create_value, trans_cum_value)
         self.wait(4)
 
-        
+
 class pc1_find(PCA):
     def construct(self):        
         data = self.import_points()
@@ -428,16 +416,3 @@ class reduce_dim(PCA):
         self.wait(0.5)
         self.play(Transform(points_scaled, x_proj), FadeOut(self.plane), FadeIn(Line([-10, 0, 0], [10, 0, 0])), run_time = 2)
         self.wait(4)
-
-
-class test(Scene):
-    def construct(self):
-        self.add(NumberPlane(
-            x_range=[-10, 10], 
-            y_range=[-10, 10], 
-            background_line_style={
-                "stroke_color": PROMUTUEL_YELLOW,
-                "stroke_width": 3,
-                "stroke_opacity": 0.2
-            }
-        ))

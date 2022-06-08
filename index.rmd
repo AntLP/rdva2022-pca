@@ -30,8 +30,6 @@ library(mgcv)
 library(transformr)
 library(tidyverse)
 library(kableExtra)
-library(ggthemr)
-library(gganimate)
 set.seed(20211203L)
 ```
 
@@ -137,7 +135,7 @@ update_geom_defaults("line", list(
 dat_pca <- read.csv("./data/pca_example.csv") %>% 
   mutate(across(.fns = ~round(.x, 3)))
 
-source("./src/PCA_geo_assets.R")
+source("./src/PCA_geo_assets.R", encoding = "utf-8")
 ```
 
 
